@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rekalogika\Analytics\Metadata;
 
-use Rekalogika\Analytics\IdClassifier;
 use Rekalogika\Analytics\Partition;
+use Rekalogika\Analytics\PartitionKeyClassifier;
 use Rekalogika\Analytics\PartitionValueResolver;
 use Rekalogika\Analytics\Util\PartitionUtil;
 
@@ -29,8 +29,8 @@ final readonly class PartitionMetadata
         private string $summaryProperty,
         private string $partitionClass,
         private string $partitionLevelProperty,
-        private string $partitionIdProperty,
-        private IdClassifier $idClassifier,
+        private string $partitionKeyProperty,
+        private PartitionKeyClassifier $partitionKeyClassifier,
     ) {}
 
     /**
@@ -59,9 +59,9 @@ final readonly class PartitionMetadata
         return $this->partitionLevelProperty;
     }
 
-    public function getPartitionIdProperty(): string
+    public function getPartitionKeyProperty(): string
     {
-        return $this->partitionIdProperty;
+        return $this->partitionKeyProperty;
     }
 
     public function createPartitionFromSourceValue(
@@ -78,7 +78,7 @@ final readonly class PartitionMetadata
         }
 
         /** @var mixed */
-        $inputValue = $valueResolver->transform($sourceValue);
+        $inputValue = $valueResolver->transformSourceValueToSummaryValue($sourceValue);
 
         return $partitionClass::createFromSourceValue($inputValue, $level);
     }
@@ -121,11 +121,11 @@ final readonly class PartitionMetadata
             throw new \RuntimeException('Partition source is empty');
         }
 
-        return $valueResolver->reverseTransform($inputBound);
+        return $valueResolver->transformSummaryValueToSourceValue($inputBound);
     }
 
-    public function getIdClassifier(): IdClassifier
+    public function getKeyClassifier(): PartitionKeyClassifier
     {
-        return $this->idClassifier;
+        return $this->partitionKeyClassifier;
     }
 }
