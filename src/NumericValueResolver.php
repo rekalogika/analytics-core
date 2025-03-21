@@ -15,6 +15,8 @@ namespace Rekalogika\Analytics;
 
 /**
  * Determines the numeric value out of the value and raw value of a measure.
+ *
+ * @deprecated
  */
 interface NumericValueResolver
 {
