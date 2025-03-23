@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rekalogika\Analytics\PivotTableAdapter;
 
 use Rekalogika\Analytics\Contracts\TreeResult;
-use Rekalogika\Analytics\PivotTable\BranchNode;
+use Rekalogika\PivotTable\BranchNode;
 
 final readonly class PivotTableAdapter implements BranchNode
 {
