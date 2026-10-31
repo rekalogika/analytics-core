@@ -103,7 +103,7 @@ final class RefreshAgentLock implements ResetInterface
     private function getKey(string $summaryClass): Key
     {
         return $this->summaryClassToKey[$summaryClass]
-            ?? new Key(\sprintf('rekalogika_analytics_%s', $summaryClass));
+            ??= new Key(\sprintf('rekalogika_analytics_%s', $summaryClass));
     }
 
     private function removeKey(string $summaryClass): void
@@ -128,6 +128,20 @@ final class RefreshAgentLock implements ResetInterface
         } catch (LockConflictedException) {
             return false;
         }
+    }
+
+    /**
+     * Acquire lock, wait until another process releases the lock if
+     * necessary.
+     *
+     * @param class-string $summaryClass
+     */
+    public function waitAndAcquire(string $summaryClass): void
+    {
+        $store = $this->getStoreBySummaryClass($summaryClass);
+        $key = $this->getKey($summaryClass);
+
+        $store->waitAndSave($key);
     }
 
     /**
